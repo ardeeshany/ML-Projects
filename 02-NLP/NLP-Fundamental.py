@@ -56,9 +56,9 @@ dictionary.token2id.get('and')
 dictionary.get(32)
 
 dictionary.doc2bow(word_tokenize("I made it done done though"))  # compare a new doc with the dictionary ids to create its bow
-my_sents = [word_tokenize(s.lower()) for s in sent_tokenize(monol)]
+my_sents_tokens = [word_tokenize(s.lower()) for s in sent_tokenize(monol)]
 
-corpus = [dictionary.doc2bow(s) for s in my_sents]
+corpus = [dictionary.doc2bow(s) for s in my_sents_tokens]
 corpus # a list shows bow based on id for each document
 
 
@@ -69,5 +69,60 @@ tfidf = TfidfModel(corpus)
 tfidf[corpus[1]]
 dictionary.get(10)
 
-
 # ======================
+
+## NER (Named-Entity Recognition) with nltk
+### Stanford CoreNLP library -> Needs JAVA
+my_tokens = word_tokenize(monol)
+
+my_chunks = nltk.pos_tag(my_tokens)
+print(nltk.ne_chunk(nltk.pos_tag(my_tokens)))
+my_chunks = nltk.ne_chunk(nltk.pos_tag(my_tokens), binary=True)
+
+PRP_list = []
+for c in my_chunks:
+  if(c[1] == 'PRP'):
+    PRP_list.append(c[0])
+
+list(set(PRP_list)) # unique values
+list(set(list(map(lambda x: x.lower(), list(set(PRP_list))))))
+
+
+# import sys
+# sys.prefix
+# 
+# import site
+# site.getsitepackages()
+
+## NER with SpaCy
+import spacy
+import spacy.cli
+spacy.cli.download("en_core_web_sm")
+nlp = spacy.load("en_core_web_sm")
+doc = nlp(monol)
+doc.ents
+
+chelsea = """ Chelsea Football Club, often referred to as Chelsea, 
+is an English professional football club based in Fulham, West London. 
+Founded in 1905, the club competes in the Premier League, the top division
+of English football. Chelsea are among England's most successful clubs,
+having won over thirty competitive honours, including six League titles
+and nine international trophies. Their home ground is Stamford Bridge.[4]"""
+
+doc = nlp(chelsea)
+doc.ents
+doc.ents[12].text
+doc.ents[12].label_  # GPE = GeoPolitical Entity
+
+## polyglot: Multilingual NER
+
+from polyglot.text import Text
+
+poet = """یکی از نثر نویسان آغاز کار قاجاریه میرزا رضی منشی الممالک، فرزند میرزا شفیع آذربایجانی، است. میرزا رضی از خانواده‌ای برخاسته، که از عقاید صوفیگری پیروی می‌کرده‌اند، ولی این امر او و پدر وی را از رسیدن به مقامات عالیه دولتی بازنداشته‌است. میرزا شفیع مستوفی نادرشاه بود و میرزا رضی پس از فوت پدر در دولت کریم خان زند و پس از او دربار آغا محمد خان قاجار منصب استیفا داشت و رسائل و نامه‌ها و فرامین عمده را به عربی و فارسی و ترکی و جغتایی تحریر می‌کرد و چون نوبت پادشاهی به فتحعلی شاه رسید در دربار او عزت و احترام بیشتری یافت و مشهور است که به هنگام سلام هم لوله قرطاس و هم خنجر الماس به کمر می‌زده است.
+
+میرزا رضی به ترکی و گاهی به فارسی و عربی شعر می‌سرود و " بنده " تخلص می‌کرد. رضا قلی خان هدایت دو قصیده فارسی او را در مجمع الفصحاء ضبط کرده‌است.  """
+
+txt = Text(poet)
+
+txt.entities
+txt.entities[0].tag
