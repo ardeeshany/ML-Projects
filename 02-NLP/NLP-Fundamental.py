@@ -1,4 +1,9 @@
 # ====================
+# import sys
+# sys.prefix
+# 
+# import site
+# site.getsitepackages()
 
 # sample text from waiting for goddot
 wfg = "Estragon: We always find something, eh Didi, to give us the impression we exist? Vladimir: Yes, yes, we're magicians."
@@ -49,14 +54,14 @@ puts it on again.) Nothing to be done."""
 my_tokens = [w.lower() for w in word_tokenize(monol)]
 
 from gensim.corpora.dictionary import Dictionary
-dictionary = Dictionary(my_sents)
+my_sents_tokens = [word_tokenize(s.lower()) for s in sent_tokenize(monol)]
+dictionary = Dictionary(my_sents_tokens)
 
 dictionary.token2id              # gives an id to each unique word
 dictionary.token2id.get('and')
 dictionary.get(32)
 
 dictionary.doc2bow(word_tokenize("I made it done done though"))  # compare a new doc with the dictionary ids to create its bow
-my_sents_tokens = [word_tokenize(s.lower()) for s in sent_tokenize(monol)]
 
 corpus = [dictionary.doc2bow(s) for s in my_sents_tokens]
 corpus # a list shows bow based on id for each document
@@ -75,6 +80,7 @@ dictionary.get(10)
 ### Stanford CoreNLP library -> Needs JAVA
 my_tokens = word_tokenize(monol)
 
+import nltk
 my_chunks = nltk.pos_tag(my_tokens)
 print(nltk.ne_chunk(nltk.pos_tag(my_tokens)))
 my_chunks = nltk.ne_chunk(nltk.pos_tag(my_tokens), binary=True)
@@ -88,19 +94,11 @@ list(set(PRP_list)) # unique values
 list(set(list(map(lambda x: x.lower(), list(set(PRP_list))))))
 
 
-# import sys
-# sys.prefix
-# 
-# import site
-# site.getsitepackages()
-
 ## NER with SpaCy
 import spacy
 import spacy.cli
 spacy.cli.download("en_core_web_sm")
 nlp = spacy.load("en_core_web_sm")
-doc = nlp(monol)
-doc.ents
 
 chelsea = """ Chelsea Football Club, often referred to as Chelsea, 
 is an English professional football club based in Fulham, West London. 
@@ -111,6 +109,7 @@ and nine international trophies. Their home ground is Stamford Bridge.[4]"""
 
 doc = nlp(chelsea)
 doc.ents
+
 doc.ents[12].text
 doc.ents[12].label_  # GPE = GeoPolitical Entity
 
