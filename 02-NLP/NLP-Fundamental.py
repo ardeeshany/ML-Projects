@@ -125,3 +125,16 @@ txt = Text(poet)
 
 txt.entities
 txt.entities[0].tag
+
+
+
+# =========================
+
+## Text to supervised learning by bow as features + lable
+
+## Count Vectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
+## Run sklearn MultinomialNB()
+
